@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Kanit", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+}
+
+:root {
+  --bg-primary: #0C0C0C;
+  --text-primary: #D7E2EA;
+  --hero-gradient-start: #646973;
+  --hero-gradient-end: #BBCCD7;
+  --glass-bg: rgba(215, 226, 234, 0.03);
+  --glass-border: rgba(215, 226, 234, 0.1);
+}
+
+html[data-theme='day'] {
+  --bg-primary: #E2E8F0;
+  --text-primary: #1E293B;
+  --hero-gradient-start: #1E293B;
+  --hero-gradient-end: #64748B;
+  --glass-bg: rgba(30, 41, 59, 0.05);
+  --glass-border: rgba(30, 41, 59, 0.15);
+}
+
+html[data-theme='void'] {
+  --bg-primary: #000000;
+  --text-primary: #FFFFFF;
+  --hero-gradient-start: #FFFFFF;
+  --hero-gradient-end: #888888;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.3);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+html, body, #root {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hero-heading {
+  background: linear-gradient(180deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.contact-btn-bg {
+  background: linear-gradient(123deg, #18011F 7%, #B600A8 37%, #7621B0 72%, #BE4C00 100%);
+  box-shadow: 0px 4px 4px rgba(181, 1, 167, 0.25), inset 4px 4px 12px #7721B1;
+  outline: 2px solid var(--text-primary);
+  outline-offset: -3px;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+}
