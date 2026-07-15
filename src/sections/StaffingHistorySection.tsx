@@ -9,6 +9,13 @@ import React, { useRef, useEffect } from "react";
 
 const history = [
   {
+    role: "Founder",
+    server: "Exora Studios",
+    duration: "Active",
+    description:
+      "Co-founded and leading Exora Studios, a professional development and creative studio specialized in delivering top-tier custom plugins, system architecture, and Discord communities for Minecraft networks.",
+  },
+  {
     role: "Owner",
     server: "SoulBerry",
     duration: "Releasing Soon",
@@ -19,7 +26,7 @@ const history = [
   {
     role: "Manager",
     server: "NitroMC",
-    duration: "Active",
+    duration: "Resigned",
     description:
       "Managing daily operations, coordinating staff teams, and ensuring a smooth, engaging player experience across the network.",
     ip: "play.nitromc.lol",
