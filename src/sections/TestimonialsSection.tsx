@@ -1,6 +1,7 @@
 import { FadeIn } from '../components/FadeIn';
 import { motion } from 'motion/react';
 import React, { useState } from 'react';
+import { BlockBurstButton } from '../components/BlockBurstButton';
 
 type Testimonial = {
   id: number;
@@ -8,10 +9,6 @@ type Testimonial = {
   role: string;
   text: string;
 };
-
-const initialTestimonials: Testimonial[] = [];
-
-import { BlockBurstButton } from '../components/BlockBurstButton';
 
 function AddReviewForm({ onSubmit }: { onSubmit: (review: { author: string; role: string; text: string }) => void }) {
   const [newReview, setNewReview] = useState({ author: '', role: '', text: '' });
@@ -66,12 +63,49 @@ function AddReviewForm({ onSubmit }: { onSubmit: (review: { author: string; role
   );
 }
 
+const defaultTestimonials: Testimonial[] = [
+  {
+    id: 1,
+    author: "Steve",
+    role: "Admin, MineFloat",
+    text: "Incredible staff member. Always on top of tickets, highly reliable, and is excellent at resolving player issues calmly and professionally."
+  },
+  {
+    id: 2,
+    author: "Alex",
+    role: "Owner, IceMC",
+    text: "A true professional. Managed our entire staff team, increased staff retention, and implemented clean, standardized protocols."
+  },
+  {
+    id: 3,
+    author: "Notch",
+    role: "Manager, Heartless",
+    text: "Extremely dedicated and hardworking. Easily handled complex community moderation situations and helped our server grow securely."
+  }
+];
+
 export function TestimonialsSection() {
   const [activeTab, setActiveTab] = useState<'view' | 'add'>('view');
-  const [testimonials, setTestimonials] = useState<Testimonial[]>(initialTestimonials);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
+    try {
+      const saved = localStorage.getItem('testimonials');
+      if (saved) {
+        return JSON.parse(saved);
+      }
+    } catch (e) {
+      console.error("Error reading testimonials from localStorage", e);
+    }
+    return defaultTestimonials;
+  });
 
   const handleAddReview = (newReview: { author: string; role: string; text: string }) => {
-    setTestimonials([{ id: Date.now(), ...newReview }, ...testimonials]);
+    const updated = [{ id: Date.now(), ...newReview }, ...testimonials];
+    setTestimonials(updated);
+    try {
+      localStorage.setItem('testimonials', JSON.stringify(updated));
+    } catch (e) {
+      console.error("Error writing testimonials to localStorage", e);
+    }
     setActiveTab('view');
   };
 
