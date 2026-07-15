@@ -2,6 +2,7 @@ import { FadeIn } from '../components/FadeIn';
 import { motion } from 'motion/react';
 import React, { useState } from 'react';
 import { BlockBurstButton } from '../components/BlockBurstButton';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Testimonial = {
   id: number;
@@ -63,34 +64,18 @@ function AddReviewForm({ onSubmit }: { onSubmit: (review: { author: string; role
   );
 }
 
-const defaultTestimonials: Testimonial[] = [
-  {
-    id: 1,
-    author: "Steve",
-    role: "Admin, MineFloat",
-    text: "Incredible staff member. Always on top of tickets, highly reliable, and is excellent at resolving player issues calmly and professionally."
-  },
-  {
-    id: 2,
-    author: "Alex",
-    role: "Owner, IceMC",
-    text: "A true professional. Managed our entire staff team, increased staff retention, and implemented clean, standardized protocols."
-  },
-  {
-    id: 3,
-    author: "Notch",
-    role: "Manager, Heartless",
-    text: "Extremely dedicated and hardworking. Easily handled complex community moderation situations and helped our server grow securely."
-  }
-];
+const defaultTestimonials: Testimonial[] = [];
 
 export function TestimonialsSection() {
   const [activeTab, setActiveTab] = useState<'view' | 'add'>('view');
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [testimonials, setTestimonials] = useState<Testimonial[]>(() => {
     try {
       const saved = localStorage.getItem('testimonials');
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Filter out old mock testimonials with IDs 1, 2, or 3
+        return parsed.filter((t: Testimonial) => t.id > 3);
       }
     } catch (e) {
       console.error("Error reading testimonials from localStorage", e);
@@ -106,7 +91,21 @@ export function TestimonialsSection() {
     } catch (e) {
       console.error("Error writing testimonials to localStorage", e);
     }
+    setCurrentIndex(0); // Reset index to the newly added review
     setActiveTab('view');
+  };
+
+  const safeIndex = Math.min(currentIndex, Math.max(0, testimonials.length - 1));
+  const activeTestimonial = testimonials[safeIndex];
+
+  const handleNext = () => {
+    if (testimonials.length === 0) return;
+    setCurrentIndex((prev) => (prev + 1) % testimonials.length);
+  };
+
+  const handlePrev = () => {
+    if (testimonials.length === 0) return;
+    setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
   };
 
   return (
@@ -136,33 +135,57 @@ export function TestimonialsSection() {
         </FadeIn>
 
         {activeTab === 'view' ? (
-          <FadeIn delay={0.2} y={20} className="w-full overflow-hidden">
-             {testimonials.length > 0 ? (
-               <>
-                 {/* Scrolling Carousel */}
-                 <div className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory hide-scrollbar" style={{ scrollbarWidth: 'none' }}>
-                    {testimonials.map((testimonial, i) => (
-                      <motion.div 
-                        key={testimonial.id}
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: i * 0.1 }}
-                        className="min-w-[85vw] sm:min-w-[400px] max-w-[500px] bg-white/[0.02] border border-white/5 rounded-[30px] p-8 sm:p-10 snap-center flex-shrink-0 flex flex-col justify-between"
-                      >
-                        <p className="text-foreground/80 italic mb-8 text-lg sm:text-xl leading-relaxed">"{testimonial.text}"</p>
-                        <div>
-                          <div className="text-foreground font-bold uppercase tracking-wider text-lg">{testimonial.author}</div>
-                          <div className="text-foreground/50 text-sm uppercase tracking-widest mt-1">{testimonial.role}</div>
-                        </div>
-                      </motion.div>
-                    ))}
-                 </div>
-                 <div className="text-center mt-4 text-foreground/30 text-xs uppercase tracking-widest">
-                    Swipe to view more →
-                 </div>
-               </>
+          <FadeIn delay={0.2} y={20} className="w-full flex flex-col items-center">
+             {testimonials.length > 0 && activeTestimonial ? (
+               <div className="w-full max-w-2xl flex flex-col items-center">
+                 {/* Testimonial Card */}
+                 <motion.div 
+                   key={activeTestimonial.id}
+                   initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                   animate={{ opacity: 1, scale: 1, y: 0 }}
+                   transition={{ duration: 0.3, ease: "easeOut" }}
+                   className="w-full bg-white/[0.02] border border-white/5 rounded-[30px] p-8 sm:p-12 shadow-[0_0_50px_rgba(0,0,0,0.3)] flex flex-col justify-between min-h-[260px] relative"
+                 >
+                   <div>
+                     <p className="text-foreground/90 italic text-xl sm:text-2xl leading-relaxed relative z-10 pl-2">
+                       "{activeTestimonial.text}"
+                     </p>
+                   </div>
+                   <div className="mt-8 flex justify-between items-end border-t border-white/5 pt-6">
+                     <div>
+                       <div className="text-foreground font-bold uppercase tracking-wider text-lg">{activeTestimonial.author}</div>
+                       {activeTestimonial.role && (
+                         <div className="text-foreground/50 text-sm uppercase tracking-widest mt-1">{activeTestimonial.role}</div>
+                       )}
+                     </div>
+                     <div className="text-foreground/30 text-xs font-mono tracking-widest uppercase">
+                       {safeIndex + 1} of {testimonials.length}
+                     </div>
+                   </div>
+                 </motion.div>
+
+                 {/* Pagination Controls */}
+                 {testimonials.length > 1 && (
+                   <div className="flex gap-4 mt-8">
+                     <button 
+                       onClick={handlePrev}
+                       className="p-3 rounded-full border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-white/20 text-foreground/70 hover:text-white transition-all flex items-center justify-center cursor-pointer active:scale-95"
+                       title="Previous testimonial"
+                     >
+                       <ChevronLeft className="w-6 h-6" />
+                     </button>
+                     <button 
+                       onClick={handleNext}
+                       className="p-3 rounded-full border border-white/5 bg-white/[0.02] hover:bg-white/10 hover:border-white/20 text-foreground/70 hover:text-white transition-all flex items-center justify-center cursor-pointer active:scale-95"
+                       title="Next testimonial"
+                     >
+                       <ChevronRight className="w-6 h-6" />
+                     </button>
+                   </div>
+                 )}
+               </div>
              ) : (
-               <div className="text-center py-20 bg-white/[0.02] border border-white/5 rounded-[30px]">
+               <div className="text-center py-20 bg-white/[0.02] border border-white/5 rounded-[30px] w-full max-w-2xl">
                  <p className="text-foreground/50 italic text-lg mb-6">No endorsements yet.</p>
                  <BlockBurstButton 
                    onClick={() => setActiveTab('add')}
