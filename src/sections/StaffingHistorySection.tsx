@@ -9,19 +9,19 @@ import React, { useRef, useEffect } from "react";
 
 const history = [
   {
-    role: "Founder",
-    server: "Exora Studios",
+    role: "Net Manager",
+    server: "Extreme Network",
     duration: "Active",
     description:
-      "Co-founded and leading Exora Studios, a professional development and creative studio specialized in delivering top-tier custom plugins, system architecture, and Discord communities for Minecraft networks.",
+      "Directing network operations, managing staff members and procedures, and ensuring a smooth, engaging community experience.",
+    ip: "play.extremenet.fun",
   },
   {
-    role: "Owner",
-    server: "SoulBerry",
-    duration: "Releasing Soon",
+    role: "Founder",
+    server: "Exora Studios",
+    duration: "Resigned",
     description:
-      "Leading the development and preparation for the upcoming launch. Overseeing all aspects of server creation, community building, and strategic planning.",
-    ip: "play.soulberry.fun",
+      "Co-founded Exora Studios, a professional development and creative studio specialized in delivering top-tier custom plugins, system architecture, and Discord communities for Minecraft networks.",
   },
   {
     role: "Manager",
